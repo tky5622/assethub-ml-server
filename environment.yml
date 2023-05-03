@@ -1,4 +1,4 @@
-name: base
+name: ml-server
 channels:
   - defaults
 dependencies:
