@@ -12,8 +12,16 @@ RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 # Since wget is missing
 RUN apt-get update && apt-get install -y wget
 
+RUN wget \
+    https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && mkdir /root/.conda \
+    && bash Miniconda3-latest-Linux-x86_64.sh -b \
+    && rm -f Miniconda3-latest-Linux-x86_64.sh 
+RUN conda --version
+
 #Install MINICONDA
 # RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda.sh && \
+#     mkdir /root/.conda \
 # 	/bin/bash Miniconda.sh -b -p /opt/conda && \
 # 	rm Miniconda.sh
 
@@ -22,7 +30,8 @@ ENV PATH /opt/conda/bin:$PATH
 # Install gcc as it is missing in our base layer
 RUN apt-get update && apt-get -y install gcc 
 
-RUN conda env create -f environment.yml --force
+RUN conda env create -f environment.yml
+RUN pip install -r requirements.txt
 
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "myenv", "/bin/bash", "-c"]
@@ -31,7 +40,7 @@ SHELL ["conda", "run", "-n", "myenv", "/bin/bash", "-c"]
 RUN echo "Make sure flask is installed:"
 RUN python -c "import flask"
 
-EXPOSE 5000
+EXPOSE 6000
 
 # The code to run when container is started:
 ENTRYPOINT ["conda", "run", "-n", "myenv", "python", "src/app.py"]
