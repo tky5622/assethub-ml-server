@@ -1,4 +1,4 @@
-name: ml-server
+name: base
 channels:
   - defaults
 dependencies:
@@ -192,3 +192,4 @@ dependencies:
   - zlib=1.2.13=h5a0b063_0
   - zstandard=0.19.0=py39h80987f9_0
   - zstd=1.5.5=hd90d995_0
+prefix: /Users/takuya/miniconda3
