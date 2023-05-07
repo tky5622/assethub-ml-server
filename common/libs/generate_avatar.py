@@ -1,14 +1,14 @@
 
-from _util.util_v1 import * ; import _util.util_v1 as uutil
-from _util.pytorch_v1 import * ; import _util.pytorch_v1 as utorch
-from _util.twodee_v1 import * ; import _util.twodee_v1 as u2d
-from _util.threedee_v0 import * ; import _util.threedee_v0 as u3d
-from _util.video_v1 import * ; import _util.video_v1 as uvid
+from common.libs.panic3d._util.util_v1 import * ; import common.libs.panic3d._util.util_v1 as uutil
+from common.libs.panic3d._util.pytorch_v1 import * ; import common.libs.panic3d._util.pytorch_v1 as utorch
+from common.libs.panic3d._util.twodee_v1 import * ; import common.libs.panic3d._util.twodee_v1 as u2d
+from common.libs.panic3d._util.threedee_v0 import * ; import common.libs.panic3d._util.threedee_v0 as u3d
+from common.libs.panic3d._util.video_v1 import * ; import common.libs.panic3d._util.video_v1 as uvid
 
-import _train.eg3dc.util.eg3dc_v0 as ueg3d
-import _util.serving_v1 as userving
-from _util import sketchers_v2 as usketch
-from _util import eg3d_metrics3d as egm
+import common.libs.panic3d._train.eg3dc.util.eg3dc_v0 as ueg3d
+import common.libs.panic3d._util.serving_v1 as userving
+from common.libs.panic3d._util import sketchers_v2 as usketch
+from common.libs.panic3d._util import eg3d_metrics3d as egm
 import trimesh
 from PIL import Image
 import trimesh.smoothing as smoothing
@@ -29,14 +29,14 @@ from trimesh.exchange.gltf import export_glb
 
 
 # load reconstruction module (resnet extractor)
-from _train.danbooru_tagger.helpers.katepca import ResnetFeatureExtractorPCA
+from common.libs.panic3d._train.danbooru_tagger.helpers.katepca import ResnetFeatureExtractorPCA
 
 aligndata = pload('./_data/lustrous/renders/daredemoE/fandom_align_alignment.pkl')
 
 PRE_DIFNED_ALIGN = 'daredemoE/fandom_align/genshin/aether/front'
 
 # load illustration-to-render module
-from _train.img2img.util import rmline_wrapper
+from common.libs.panic3d._train.img2img.util import rmline_wrapper
 # load reconstruction module
 
 inference_opts = {
