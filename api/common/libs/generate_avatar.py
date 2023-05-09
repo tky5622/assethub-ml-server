@@ -1,3 +1,6 @@
+import os
+os.environ["PROJECT_DN"] = '/usr/src/api/common/libs/panic3d'
+
 
 from common.libs.panic3d._util.util_v1 import * ; import common.libs.panic3d._util.util_v1 as uutil
 from common.libs.panic3d._util.pytorch_v1 import * ; import common.libs.panic3d._util.pytorch_v1 as utorch
@@ -38,6 +41,7 @@ PRE_DIFNED_ALIGN = 'daredemoE/fandom_align/genshin/aether/front'
 # load illustration-to-render module
 from common.libs.panic3d._train.img2img.util import rmline_wrapper
 # load reconstruction module
+
 
 inference_opts = {
     'triplane_crop': 0.1,
@@ -160,6 +164,49 @@ def make_point_with_smooth(mc):
         f.write(glb_data)
     print('saved')
     
+
+# this code is copied from download_genshin_2d
+
+def _apply_M(img, M, size=512):
+    output = I(kornia.geometry.transform.warp_affine(
+        img.convert('RGBA').bg('w').convert('RGB').t()[None],
+        torch.tensor(M).float()[[1,0,2]].T[[1,0,2]].T[None,:2],
+        (size,size),
+        mode='bilinear',
+        padding_mode='fill',
+        align_corners=True,
+        fill_value=torch.ones(3),
+    )).alpha_set(I(kornia.geometry.transform.warp_affine(
+        img['a'].t()[None],
+        torch.tensor(M).float()[[1,0,2]].T[[1,0,2]].T[None,:2],
+        (size,size),
+        mode='bilinear',
+        padding_mode='fill',
+        align_corners=True,
+        fill_value=torch.zeros(3),
+    ))['r'])
+     
+    return output
+
+def generate_image(image):
+    # a = aligndata[bn]
+    default_transformation = np.eye(3)
+    a = {"transformation": default_transformation}
+    fan,franch,idx,view = a['source'].split('/')
+    img_src = I(f'{rdn}/{fan}/images/{franch}/{idx}/{view}.png')
+    img_seg = I(f'./_data/lustrous/renders/{bn.replace("fandom_align","fandom_align_seg")}.png')
+    out = _apply_M(img_src, a['transformation']).alpha_set(img_seg)
+    if DEBUG:
+        out.save(mkfile(f'/dev/shm/renders/{bn}.png'))
+    else:
+        out.save(mkfile(f'./_data/lustrous/renders/{bn}.png'))
+   
+
+
+
+
+
+
 def ml_api_method():
     x = {}
     image = Image.open('./front.png')
