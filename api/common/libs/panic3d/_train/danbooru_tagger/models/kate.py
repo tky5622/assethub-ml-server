@@ -18,7 +18,8 @@ class Model(pl.LightningModule):
         # see ./hack/snips/danbooru_intently_combatively.py for preprocessing
         self.filter_subset = largs.danbooru_sfw.filter_subset
         self.filter_rules = largs.danbooru_sfw.filter_rules
-        self.fn_rules = f'{bargs.dn}/_data/danbooru/_filters/{self.filter_subset}_{self.filter_rules}_rules.json'
+        self.fn_rules = f'/usr/src/api/models/{self.filter_subset}_{self.filter_rules}_rules.json'
+        # self.fn_rules = f'{bargs.dn}/_data/danbooru/_filters/{self.filter_subset}_{self.filter_rules}_rules.json'
         self.rules = jread(self.fn_rules)
 
         # setup resnet

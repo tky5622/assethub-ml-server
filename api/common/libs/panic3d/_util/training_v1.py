@@ -100,7 +100,9 @@ def infer_module_trainer(query, bargs=Dict(dn='.')):
     return None
 def infer_module_run(query, bargs=Dict(dn='.')):
     # query: name or fn of py/sh
-    tdn = f'{bargs["dn"]}/_train'
+    # TODO: check if this change is valid or not 
+    tdn = '/usr/src/api/common/libs/panic3d/_train'
+    # tdn = f'{bargs["dn"]}/_train'
     if os.path.isfile(query):
         query = query.split('/')[-1].split('.')[0]
     q = query

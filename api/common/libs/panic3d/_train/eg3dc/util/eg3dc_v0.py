@@ -36,7 +36,9 @@ def load_eg3dc_model(
     else:
         name,version,epoch = inferquery.split('-')
         version,epoch = int(version),int(epoch)
-        network_pkl = f'./_train/eg3dc/runs/{name}/{version:05d}/network-snapshot-{epoch:06d}.pkl'
+        # file path is changed for docker env
+        # TODO: use env or something instead of writing it directly 
+        network_pkl = f'/usr/src/api/models/{name}/{version:05d}/network-snapshot-{epoch:06d}.pkl'
         nickname = f'{name}-{version:05d}-{epoch:06d}'
     with dnnlib.util.open_url(network_pkl) as fp:
         network_data = legacy.load_network_pkl(fp)

@@ -17,6 +17,7 @@ class RMLineWrapper(nn.Module):
         super().__init__()
         self.inferquery = inferquery
         ckpt = userving.Checkpoint(*inferquery)
+        # ckpt = 
         self.model = ckpt.model()#.to(device)
         return
     def forward(self, img, kpts):

@@ -34,7 +34,8 @@ from trimesh.exchange.gltf import export_glb
 # load reconstruction module (resnet extractor)
 from common.libs.panic3d._train.danbooru_tagger.helpers.katepca import ResnetFeatureExtractorPCA
 
-aligndata = pload('./_data/lustrous/renders/daredemoE/fandom_align_alignment.pkl')
+# file path are changed from original one 
+aligndata = pload('/usr/src/api/models/fandom_align_alignment.pkl')
 
 PRE_DIFNED_ALIGN = 'daredemoE/fandom_align/genshin/aether/front'
 
@@ -86,7 +87,8 @@ def rmline(img, aligndata):
 
 def generate_avatar(x, align):
     resnet = ResnetFeatureExtractorPCA(
-    './_data/lustrous/preprocessed/minna_resnet_feats_ortho/pca.pkl', 512,
+    #file path are changed from original one  
+    '/usr/src/api/models/pca.pkl', 512,
 ).eval().to(device)
 
 
@@ -209,7 +211,7 @@ def generate_image(image):
 
 def ml_api_method():
     x = {}
-    image = Image.open('./front.png')
+    image = Image.open('/usr/src/api/models/front.png')
     x['image'] = u2d.I(image)
     merching_cube = generate_avatar(x, PRE_DIFNED_ALIGN)
     make_point_with_smooth(merching_cube)

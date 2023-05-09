@@ -38,7 +38,8 @@ RUN conda install \
     'scikit-learn==1.0.2' \
     'scikit-image==0.19.2' \
     'imagesize==1.3.0' \
-    'jupyterlab==3.3.2'
+    'jupyterlab==3.3.2' \
+    'flask'
 
 RUN conda install --force-reinstall \
     'pillow==9.0.1'
@@ -83,7 +84,6 @@ RUN pip install \
 
 RUN pip install \
     'markupsafe==2.0.1' \
-    'flask==2.2.4' \
     'ipdb' \
     'trimesh'
 
