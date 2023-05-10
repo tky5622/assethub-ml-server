@@ -206,10 +206,6 @@ def generate_image(image):
         out.save(mkfile(f'./_data/lustrous/renders/{bn}.png'))
    
 
-
-
-
-
 def ml_api_method(user_id, inference_resource_id):
     x = {}
     image_url = get_inference_images(inference_resource_id)
