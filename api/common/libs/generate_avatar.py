@@ -29,7 +29,8 @@ import ipdb
 import trimesh
 import pygltflib
 from trimesh.exchange.gltf import export_glb
-from save_model import get_inference_images, save_avatar
+from common.libs.save_model import get_inference_images, save_avatar
+from io import BytesIO
 
 
 # load reconstruction module (resnet extractor)
@@ -167,6 +168,7 @@ def make_point_with_smooth(mc):
     with open("output3333erere.glb", "wb") as f:
         f.write(glb_data)
     print('saved')
+    return glb_data
     
 
 # this code is copied from download_genshin_2d
@@ -209,7 +211,8 @@ def generate_image(image):
 def ml_api_method(user_id, inference_resource_id):
     x = {}
     image_url = get_inference_images(inference_resource_id)
-    image = Image.open(image_url)
+    response = requests.get(image_url)
+    image = Image.open(BytesIO(response.content))
     image = image.convert('RGBA')
     x['image'] = u2d.I(image)
     merching_cube = generate_avatar(x, PRE_DIFNED_ALIGN)
@@ -217,4 +220,5 @@ def ml_api_method(user_id, inference_resource_id):
     response = save_avatar(user_id, glb_data)
 
     return response
+
 
