@@ -7,5 +7,9 @@ venv/
 *.tar.gz
 *.zip
 *.bak
+*.json
+*.pkl
+*.ckpt
+
 
 machine_config.bashrc

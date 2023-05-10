@@ -212,6 +212,7 @@ def generate_image(image):
 def ml_api_method():
     x = {}
     image = Image.open('/usr/src/api/models/front.png')
+    image = image.convert('RGBA')
     x['image'] = u2d.I(image)
     merching_cube = generate_avatar(x, PRE_DIFNED_ALIGN)
     make_point_with_smooth(merching_cube)

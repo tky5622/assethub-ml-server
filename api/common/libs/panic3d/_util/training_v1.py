@@ -44,7 +44,8 @@ def infer_batch_size(bs, num_gpus, max_bs_per_gpu):
 
 def infer_module_task(query, bargs=Dict(dn='.')):
     # query: task name
-    tdn = f'{bargs["dn"]}/_train'
+    # change file path
+    tdn = f'/usr/src/api/common/libs/panic3d/_train'
     if os.path.isdir(f'{tdn}/{query}'):
         return Dict(
             task_name=query,
@@ -53,7 +54,7 @@ def infer_module_task(query, bargs=Dict(dn='.')):
         )
 def infer_module_dataset(query, bargs=Dict(dn='.')):
     # query: dataset name or file name
-    tdn = f'{bargs["dn"]}/_train'
+    tdn = f'/usr/src/api/common/libs/panic3d/_train'
     if os.path.isfile(query):
         query = query.split('/')[-1].split('.')[0]
     q = query
@@ -68,7 +69,7 @@ def infer_module_dataset(query, bargs=Dict(dn='.')):
     return None
 def infer_module_model(query, bargs=Dict(dn='.')):
     # query: model name or file name
-    tdn = f'{bargs["dn"]}/_train'
+    tdn = f'/usr/src/api/common/libs/panic3d/_train'
     if os.path.isfile(query):
         query = query.split('/')[-1].split('.')[0]
     q = query
@@ -83,7 +84,7 @@ def infer_module_model(query, bargs=Dict(dn='.')):
     return None
 def infer_module_trainer(query, bargs=Dict(dn='.')):
     # query: trainer name or file name
-    tdn = f'{bargs["dn"]}/_train'
+    tdn = f'/usr/src/api/common/libs/panic3d/_train'
     if os.path.isfile(query):
         query = query.split('/')[-1].split('.')[0]
     q = query
@@ -153,7 +154,7 @@ def infer_module_run(query, bargs=Dict(dn='.')):
     return None
 def infer_module_script(query, bargs=Dict(dn='.')):
     # query: __file__ of run py
-    tdn = f'{bargs["dn"]}/_train'
+    tdn = f'/usr/src/api/common/libs/panic3d/_train'
     q = query.split('/')[-1].split('.')[0]
     spl = q.split('_')
     for task in os.listdir(tdn):
