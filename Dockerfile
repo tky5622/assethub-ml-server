@@ -49,7 +49,8 @@ RUN conda install -c conda-forge \
     'addict==2.4.0' \
     'igl==2.2.1' \
     'meshplot==0.4.0' \
-    'wandb==0.12.19'
+    'wandb==0.12.19'\
+    'supabase'
 
 RUN pip install \
     'imgui==1.3.0' \
@@ -98,6 +99,11 @@ ENV FLASK_APP "run.py"
 # ENV IMAGE_URL "/storage/images"
 ENV FLASK_ENV "development"
 ENV PROJECT_DN="/usr/src/api/common/libs/panic3d"
+
+## supabase
+ENV SUPABASE_URL="https://wuyspkxtjxjlklqkchxr.supabase.co"
+ENV SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eXNwa3h0anhqbGtscWtjaHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM3MDIwMTIsImV4cCI6MTk5OTI3ODAxMn0.t-KoM175UyI6yUMUgN4g3F6-Lz3W-KWUAFO2hGkkgN8"
+
 
 EXPOSE 5000 
 
