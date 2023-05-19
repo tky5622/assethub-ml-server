@@ -1,5 +1,6 @@
 # assethub-ml-server
-docker run --rm --gpus=all --ipc=host --net=host -it 55b22f751f57
+docker build .
+docker run --rm --gpus=all --ipc=host --net=host -it 55b22f751f57 (image is)
 
 
 download models zip file and extract models dicretory
