@@ -10,6 +10,8 @@ from _train.danbooru_tagger.models.kate import Model as DanbooruTagger
 class ResnetFeatureExtractor(nn.Module):
     def __init__(
             self,
+            ## path are changed 
+            ## TODO: check
             path='/usr/src/api/models/epoch=0022-val_f2=0.4461-val_loss=0.0766.ckpt',
             size_in=None,
             pca=None,  # ('./_data/lustrous/preprocessed/minna_resnet_feats_ortho_pca.pkl', ncomp)

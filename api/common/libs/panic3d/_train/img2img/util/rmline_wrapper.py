@@ -63,6 +63,7 @@ def anime_face_detector_api(img):
     ans['bbox'] = np.asarray(ans['bbox'])
     ans['keypoints'] = np.asarray(ans['keypoints'])
     return ans
+    
 keypoint_groups = Dict(
     chin = [0,1,2,3,4],
     eyelash_right = [5,6,7],
@@ -128,6 +129,7 @@ def _apply_M_keypoints(M, kpts):
         ], axis=-1).T).T[:,:2],
         scores,
     ], axis=-1)[None,]
+
 def quickvis(img, preds, thresh=0.5, size=0.001, c='r'):
     v = img
     ms = min(img.size)

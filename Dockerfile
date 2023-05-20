@@ -88,6 +88,13 @@ RUN pip install \
     'ipdb' \
     'trimesh'
 
+# for anime face detector
+RUN pip install openmim
+RUN mim install mmcv-full
+RUN mim install mmdet
+RUN mim install mmpose
+
+RUN pip install anime-face-detector
 
 # copied from panic3d dockerfile by here
 
