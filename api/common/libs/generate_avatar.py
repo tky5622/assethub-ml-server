@@ -30,6 +30,7 @@ import trimesh
 import pygltflib
 from trimesh.exchange.gltf import export_glb
 from common.libs.save_model import get_inference_images, save_avatar
+from common.libs.alignment_image import create_keypoints_anime_face
 from io import BytesIO
 
 
@@ -211,6 +212,8 @@ def generate_image(image):
 def ml_api_method(user_id, inference_resource_id):
     x = {}
     image_url = get_inference_images(inference_resource_id)
+    preds = create_keypoints_anime_face(image_url)
+    print(preds)
     response = requests.get(image_url)
     image = Image.open(BytesIO(response.content))
     image = image.convert('RGBA')
