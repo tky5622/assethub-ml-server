@@ -30,7 +30,7 @@ import trimesh
 import pygltflib
 from trimesh.exchange.gltf import export_glb
 from common.libs.save_model import get_inference_images, save_avatar
-from common.libs.alignment_image import create_keypoints_anime_face
+from common.libs.alignment_image import create_keypoints_anime_face, face_alignment_transform
 from io import BytesIO
 
 
@@ -73,22 +73,37 @@ r0,r1 = rk['ray_start'], rk['ray_end']
 seed = 0
 
 
-def rmline(img, aligndata):
+def rmline(img, aligndata, preds):
     rmline_model = rmline_wrapper.RMLineWrapper(('rmlineE_rmlineganA_n04', 199)).eval().to(device)
+    kpts = preds['keypoints']
+    M = face_alignment_transform(kpts)
+
     with torch.no_grad():
         out = rmline_model(
             img,
             rmline_wrapper._apply_M_keypoints(
-                aligndata['transformation'],
-                aligndata['_alignment']['source']['keypoints'][
-                    aligndata['_alignment']['source']['_detection_used']
-                ][None,],
+                M,
+
             )[0,:,:2],
+            kpts,
         )
     return out
 
 
-def generate_avatar(x, align):
+    # with torch.no_grad():
+    #     out = rmline_model(
+    #         img,
+    #         rmline_wrapper._apply_M_keypoints(
+    #             aligndata['transformation'],
+    #             aligndata['_alignment']['source']['keypoints'][
+    #                 aligndata['_alignment']['source']['_detection_used']
+    #             ][None,],
+    #         )[0,:,:2],
+    #     )
+    # return out
+
+## TODO align should be deleted
+def generate_avatar(x, align, preds):
     resnet = ResnetFeatureExtractorPCA(
     #file path are changed from original one  
     '/usr/src/api/models/pca.pkl', 512,
@@ -98,7 +113,7 @@ def generate_avatar(x, align):
     with torch.no_grad():
         # attribute error bg　正常な動作をする方で、imageの中身を検証
         x['resnet_features'] = resnet(x['image'])
-        x['image_rmline'] = rmline(x['image'], aligndata[align])
+        x['image_rmline'] = rmline(x['image'], aligndata[align], preds)
 
     # get geometry (marching cubes)
     print(x['image_rmline'])
@@ -218,7 +233,7 @@ def ml_api_method(user_id, inference_resource_id):
     image = Image.open(BytesIO(response.content))
     image = image.convert('RGBA')
     x['image'] = u2d.I(image)
-    merching_cube = generate_avatar(x, PRE_DIFNED_ALIGN)
+    merching_cube = generate_avatar(x, PRE_DIFNED_ALIGN, preds)
     glb_data = make_point_with_smooth(merching_cube)
     response = save_avatar(user_id, glb_data)
 

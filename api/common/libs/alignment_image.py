@@ -3,19 +3,38 @@ import numpy as np
 # image size is 512x512
 
 
+import io
+import tempfile
+import requests
 
 ## from anime face detector 
 import cv2
 
 from anime_face_detector import create_detector
 
+import ipdb
+
+IMAGE = 'https://wuyspkxtjxjlklqkchxr.supabase.co/storage/v1/object/sign/inference_data/7fe65695-a8e0-4b29-8ba8-9256d64904d3/front.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbmZlcmVuY2VfZGF0YS83ZmU2NTY5NS1hOGUwLTRiMjktOGJhOC05MjU2ZDY0OTA0ZDMvZnJvbnQucG5nIiwiaWF0IjoxNjgzNzA3OTMwLCJleHAiOjFlKzEyMn0.u8F0wh4RK_zmE5rwKHsfWE6IT3YKR6j_Q2eqyG_6uOo&t=2023-05-10T08%3A38%3A50.622Z'
+
+def imread_web(url):
+    # 画像をリクエストする
+    res = requests.get(IMAGE)
+    img = None
+    print(res.content, 'fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+    # Tempfileを作成して即読み込む
+
+    with tempfile.NamedTemporaryFile(dir='./') as fp:
+        fp.write(res.content)
+        fp.file.seek(0)
+        img = cv2.imread(fp.name)
+    return img
 
 
 
-def create_keypoints_anime_face(image):
+def create_keypoints_anime_face(image_url):
     detector = create_detector('yolov3')
-    cv2_image = cv2.imread(image)
-    preds = detector(cv2_image)
+    image = imread_web(image_url)
+    preds = detector(image)
     return preds
 
 

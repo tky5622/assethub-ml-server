@@ -31,7 +31,7 @@ COPY ./api /usr/src/api
 
 RUN conda install \
     'click>=8.0' \
-    'scipy=1.7.1' \
+    'scipy=1.10.1' \
     'ninja=1.10.2' \
     'matplotlib=3.4.2' \
     'imageio=2.9.0' \
@@ -82,6 +82,8 @@ RUN pip install \
 
 RUN pip install \
     'opencv-contrib-python==4.5.4.60'
+RUN pip install \
+    'opencv-python==4.5.4.60'
 
 RUN pip install \
     'markupsafe==2.0.1' \
@@ -90,11 +92,14 @@ RUN pip install \
 
 # for anime face detector
 RUN pip install openmim
-RUN mim install mmcv-full
-RUN mim install mmdet
-RUN mim install mmpose
+RUN mim install mmcv-full==1.7.0
+RUN mim install mmdet==2.28.2
+RUN mim install mmpose==0.29.0
 
 RUN pip install anime-face-detector
+
+RUN pip uninstall numpy
+RUN pip install 'numpy==1.24.3'
 
 # copied from panic3d dockerfile by here
 
