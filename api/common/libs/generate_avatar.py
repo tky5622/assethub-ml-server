@@ -33,6 +33,7 @@ from common.libs.save_model import get_inference_images, save_avatar
 from common.libs.alignment_image import create_keypoints_anime_face, face_alignment_transform
 from io import BytesIO
 
+import ipdb
 
 # load reconstruction module (resnet extractor)
 from common.libs.panic3d._train.danbooru_tagger.helpers.katepca import ResnetFeatureExtractorPCA
@@ -75,17 +76,17 @@ seed = 0
 
 def rmline(img, aligndata, preds):
     rmline_model = rmline_wrapper.RMLineWrapper(('rmlineE_rmlineganA_n04', 199)).eval().to(device)
-    kpts = preds['keypoints']
+    # ipdb.set_trace()
+    kpts = preds[0]['keypoints']
     M = face_alignment_transform(kpts)
 
     with torch.no_grad():
         out = rmline_model(
             img,
             rmline_wrapper._apply_M_keypoints(
-                M,
-
+            M,
+            kpts[None,],
             )[0,:,:2],
-            kpts,
         )
     return out
 

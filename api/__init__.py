@@ -7,6 +7,7 @@ api = Blueprint("api", __name__)
 
 FIXED_INFERENCE_ID='6430fd17-a7b2-4fd9-9e4a-407e789162d9'
 FIXED_USER_ID = '7fe65695-a8e0-4b29-8ba8-9256d64904d3'
+FIXED_INFERENCE_ID2 = '15dc08fc-6c2c-4de9-851c-fe5cc84f5c86'
 # @api.get("/")
 @api.route("/", methods=["GET"])
 def index():
