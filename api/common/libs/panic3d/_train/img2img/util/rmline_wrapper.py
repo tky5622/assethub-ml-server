@@ -9,7 +9,7 @@ from _util.twodee_v1 import * ; import _util.twodee_v1 as u2d
 
 import _util.serving_v1 as userving
 from _util import sketchers_v2 as usketch
-
+import ipdb
 
 
 class RMLineWrapper(nn.Module):
@@ -94,6 +94,7 @@ def facehull(img, kpts, dilate=5):
     vm = torch.zeros(1,*img.shape[-2:])
     vn = torch.zeros(1,*img.shape[-2:])
     # v = I.blank(img.shape[-1])
+    ipdb.set_trace()
     for a,b in mkpts[keypoint_groups.eye_right].astype(int):
         vr[:,a,b] = 1
     vr = skimage.morphology.convex_hull_image(vr.numpy()[0])[None]
@@ -123,6 +124,7 @@ def facehull(img, kpts, dilate=5):
 def _apply_M_keypoints(M, kpts):
     kpts = kpts[0]
     scores = kpts[:,2:]
+    ipdb.set_trace()
     return np.concatenate([
         (M @ np.concatenate([
             kpts[:,:2], np.ones((kpts.shape[0],1))

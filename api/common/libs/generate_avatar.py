@@ -33,8 +33,6 @@ from common.libs.save_model import get_inference_images, save_avatar
 from common.libs.alignment_image import create_keypoints_anime_face, face_alignment_transform
 from io import BytesIO
 
-import ipdb
-
 # load reconstruction module (resnet extractor)
 from common.libs.panic3d._train.danbooru_tagger.helpers.katepca import ResnetFeatureExtractorPCA
 
@@ -74,37 +72,53 @@ r0,r1 = rk['ray_start'], rk['ray_end']
 seed = 0
 
 
-def rmline(img, aligndata, preds):
+def rmline(img, aligndata, preds, M):
     rmline_model = rmline_wrapper.RMLineWrapper(('rmlineE_rmlineganA_n04', 199)).eval().to(device)
     # ipdb.set_trace()
     kpts = preds[0]['keypoints']
-    M = face_alignment_transform(kpts)
+    # M = face_alignment_transform(kpts)
+    print(M, 'MMMMMMMMMMMMMM')
+    print(kpts, 'kptsssssssssssssssssssssssssssssss')
+    print(kpts[None,], 'None kptsssssssssssssssssssssssssssssss')
+
+    print(                aligndata['transformation'],
+                aligndata['_alignment']['source']['keypoints'][
+                    aligndata['_alignment']['source']['_detection_used']
+                ][None,],
+'testsetstststsststs')
+
+    ipdb.set_trace()
+
+    with torch.no_grad():
+        out = rmline_model(
+            img,
+            kpts[None,][0,:,:2],
+            ),
+    return out
+    # with torch.no_grad():
+    #     out = rmline_model(
+    #         img,
+    #         kpts,
+    #     )[0,:,:2],
+    
+    # return out
+
+
 
     with torch.no_grad():
         out = rmline_model(
             img,
             rmline_wrapper._apply_M_keypoints(
-            M,
-            kpts[None,],
+                aligndata['transformation'],
+                aligndata['_alignment']['source']['keypoints'][
+                    aligndata['_alignment']['source']['_detection_used']
+                ][None,],
             )[0,:,:2],
         )
     return out
 
-
-    # with torch.no_grad():
-    #     out = rmline_model(
-    #         img,
-    #         rmline_wrapper._apply_M_keypoints(
-    #             aligndata['transformation'],
-    #             aligndata['_alignment']['source']['keypoints'][
-    #                 aligndata['_alignment']['source']['_detection_used']
-    #             ][None,],
-    #         )[0,:,:2],
-    #     )
-    # return out
-
 ## TODO align should be deleted
-def generate_avatar(x, align, preds):
+def generate_avatar(x, align, preds, M):
     resnet = ResnetFeatureExtractorPCA(
     #file path are changed from original one  
     '/usr/src/api/models/pca.pkl', 512,
@@ -114,14 +128,15 @@ def generate_avatar(x, align, preds):
     with torch.no_grad():
         # attribute error bg　正常な動作をする方で、imageの中身を検証
         x['resnet_features'] = resnet(x['image'])
-        x['image_rmline'] = rmline(x['image'], aligndata[align], preds)
+        x['image_rmline'] = rmline(x['image'], aligndata[align], preds, M)
 
     # get geometry (marching cubes)
     print(x['image_rmline'])
+    ipdb.set_trace()
     with torch.no_grad():
         xin = {
             'cond': {
-                'image_ortho_front': x['image_rmline'].bg('w').convert('RGB').t()[None].to(device),
+                'image_ortho_front': x['image_rmline'][0].bg('w').convert('RGB').t()[None].to(device),
                 'resnet_chonk': x['resnet_features'][None,0],
             },
             'seeds': [seed,],
@@ -224,17 +239,30 @@ def generate_image(image):
     else:
         out.save(mkfile(f'./_data/lustrous/renders/{bn}.png'))
    
+def cv2pil(image_cv):
+    image_cv = cv2.cvtColor(image_cv, cv2.COLOR_BGR2RGB)
+    image_pil = Image.fromarray(image_cv)
+    image_pil = image_pil.convert('RGB')
+
+    return image_pil
 
 def ml_api_method(user_id, inference_resource_id):
     x = {}
     image_url = get_inference_images(inference_resource_id)
-    preds = create_keypoints_anime_face(image_url)
-    print(preds)
     response = requests.get(image_url)
     image = Image.open(BytesIO(response.content))
     image = image.convert('RGBA')
+    results = create_keypoints_anime_face(image_url)
+    preds, transformed_image, image_cv, I_image, M = results
+    image_pil = cv2pil(image_cv)
+
+    image_pil = image_pil.convert('RGBA')
+
     x['image'] = u2d.I(image)
-    merching_cube = generate_avatar(x, PRE_DIFNED_ALIGN, preds)
+
+
+    # ipdb.set_trace()
+    merching_cube = generate_avatar(x, PRE_DIFNED_ALIGN, preds, M)
     glb_data = make_point_with_smooth(merching_cube)
     response = save_avatar(user_id, glb_data)
 

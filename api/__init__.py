@@ -16,5 +16,5 @@ def index():
 # # @api.post("/generate")
 @api.route("/generate", methods=["GET"])
 def detection():
-    ml_api_method(FIXED_USER_ID, FIXED_INFERENCE_ID)
+    ml_api_method(FIXED_USER_ID, FIXED_INFERENCE_ID2)
     return "value"
