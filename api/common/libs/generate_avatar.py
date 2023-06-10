@@ -35,6 +35,7 @@ from io import BytesIO
 
 # load reconstruction module (resnet extractor)
 from common.libs.panic3d._train.danbooru_tagger.helpers.katepca import ResnetFeatureExtractorPCA
+from common.libs.panic3d._util.twodee_v1 import * ; import common.libs.panic3d._util.twodee_v1 as u2d
 
 # file path are changed from original one 
 aligndata = pload('/usr/src/api/models/fandom_align_alignment.pkl')
@@ -81,11 +82,11 @@ def rmline(img, aligndata, preds, M):
     print(kpts, 'kptsssssssssssssssssssssssssssssss')
     print(kpts[None,], 'None kptsssssssssssssssssssssssssssssss')
 
-    print(                aligndata['transformation'],
-                aligndata['_alignment']['source']['keypoints'][
-                    aligndata['_alignment']['source']['_detection_used']
-                ][None,],
-'testsetstststsststs')
+#     print(                aligndata['transformation'],
+#                 aligndata['_alignment']['source']['keypoints'][
+#                     aligndata['_alignment']['source']['_detection_used']
+#                 ][None,],
+# 'testsetstststsststs')
 
     ipdb.set_trace()
 
@@ -105,17 +106,17 @@ def rmline(img, aligndata, preds, M):
 
 
 
-    with torch.no_grad():
-        out = rmline_model(
-            img,
-            rmline_wrapper._apply_M_keypoints(
-                aligndata['transformation'],
-                aligndata['_alignment']['source']['keypoints'][
-                    aligndata['_alignment']['source']['_detection_used']
-                ][None,],
-            )[0,:,:2],
-        )
-    return out
+    # with torch.no_grad():
+    #     out = rmline_model(
+    #         img,
+    #         rmline_wrapper._apply_M_keypoints(
+    #             aligndata['transformation'],
+    #             aligndata['_alignment']['source']['keypoints'][
+    #                 aligndata['_alignment']['source']['_detection_used']
+    #             ][None,],
+    #         )[0,:,:2],
+    #     )
+    # return out
 
 ## TODO align should be deleted
 def generate_avatar(x, align, preds, M):
@@ -128,6 +129,7 @@ def generate_avatar(x, align, preds, M):
     with torch.no_grad():
         # attribute error bg　正常な動作をする方で、imageの中身を検証
         x['resnet_features'] = resnet(x['image'])
+        # TODO: delete aligndata 
         x['image_rmline'] = rmline(x['image'], aligndata[align], preds, M)
 
     # get geometry (marching cubes)
@@ -248,22 +250,31 @@ def cv2pil(image_cv):
 
 def ml_api_method(user_id, inference_resource_id):
     x = {}
+    ## fetch image url from supabase
     image_url = get_inference_images(inference_resource_id)
+    ## dowonload image data from url
     response = requests.get(image_url)
     image = Image.open(BytesIO(response.content))
     image = image.convert('RGBA')
-    results = create_keypoints_anime_face(image_url)
-    preds, transformed_image, image_cv, I_image, M = results
-    image_pil = cv2pil(image_cv)
 
-    image_pil = image_pil.convert('RGBA')
+    ## make keypoints and preprocess image 
+    results = create_keypoints_anime_face(image_url)
+
+    ## TODO: delete unused images
+    preds, transformed_image, image_cv, I_image, M = results
+    
+    # image_pil = cv2pil(image_cv)
+    # image_pil = image_pil.convert('RGBA')
 
     x['image'] = u2d.I(image)
 
 
     # ipdb.set_trace()
+    ## generate merching cube by edge3d
     merching_cube = generate_avatar(x, PRE_DIFNED_ALIGN, preds, M)
     glb_data = make_point_with_smooth(merching_cube)
+
+    ## make array into glb file
     response = save_avatar(user_id, glb_data)
 
     return response
