@@ -57,10 +57,13 @@ def _apply_M(img, M, size=512):
 
 
 def create_keypoints_anime_face(image_url):
+    ## anime-face-detector
     detector = create_detector('yolov3')
+    ## load images as a variable from url 
     results = imread_web(image_url)
     image_cv, I_image = results
     preds = detector(image_cv)
+
     kpts = preds[0]['keypoints']
     M = face_alignment_transform(kpts)
     transformed_image = _apply_M(I_image, M)

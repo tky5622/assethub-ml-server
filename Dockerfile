@@ -98,8 +98,8 @@ RUN mim install mmpose==0.29.0
 
 RUN pip install anime-face-detector
 
-RUN pip uninstall numpy
-RUN pip install 'numpy==1.24.3'
+#RUN pip uninstall numpy
+#RUN pip install 'numpy==1.24.3'
 
 # copied from panic3d dockerfile by here
 

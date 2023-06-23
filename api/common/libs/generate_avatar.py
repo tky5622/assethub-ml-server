@@ -88,7 +88,7 @@ def rmline(img, aligndata, preds, M):
 #                 ][None,],
 # 'testsetstststsststs')
 
-    ipdb.set_trace()
+    # ipdb.set_trace()
 
     with torch.no_grad():
         out = rmline_model(
@@ -248,6 +248,10 @@ def cv2pil(image_cv):
 
     return image_pil
 
+
+# this function is run by flask API
+# user_id, inference_resource_id are provided by API call
+# as a test, fixed values are given at __init__.py
 def ml_api_method(user_id, inference_resource_id):
     x = {}
     ## fetch image url from supabase
@@ -256,7 +260,8 @@ def ml_api_method(user_id, inference_resource_id):
     response = requests.get(image_url)
     image = Image.open(BytesIO(response.content))
     image = image.convert('RGBA')
-
+    ##
+    
     ## make keypoints and preprocess image 
     results = create_keypoints_anime_face(image_url)
 
