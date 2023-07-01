@@ -31,7 +31,7 @@ COPY ./api /usr/src/api
 
 RUN conda install \
     'click>=8.0' \
-    'scipy=1.10.1' \
+    'scipy' \
     'ninja=1.10.2' \
     'matplotlib=3.4.2' \
     'imageio=2.9.0' \
@@ -99,7 +99,7 @@ RUN mim install mmpose==0.29.0
 RUN pip install anime-face-detector
 
 RUN pip uninstall numpy
-RUN pip install 'numpy==1.24.3'
+RUN pip install numpy
 
 # copied from panic3d dockerfile by here
 
